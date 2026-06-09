@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary'
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary'
 
 // 配置Cloudinary
 cloudinary.config({
@@ -25,7 +25,14 @@ export interface UploadOptions {
   public_id?: string
   overwrite?: boolean
   resource_type?: 'image' | 'video' | 'raw'
-  transformation?: any[]
+  transformation?: Array<{
+    width?: number
+    height?: number
+    crop?: string
+    quality?: number
+    format?: string
+    [key: string]: any
+  }>
 }
 
 export const cloudinaryService = {
@@ -43,18 +50,18 @@ export const cloudinaryService = {
         transformation: options.transformation
       }
 
-      let result
+      let result: UploadApiResponse
       if (typeof file === 'string') {
         // 如果是Base64或URL
         result = await cloudinary.uploader.upload(file, uploadOptions)
       } else {
         // 如果是Buffer
-        result = await new Promise((resolve, reject) => {
+        result = await new Promise<UploadApiResponse>((resolve, reject) => {
           const uploadStream = cloudinary.uploader.upload_stream(
             uploadOptions,
             (error, result) => {
               if (error) reject(error)
-              else resolve(result)
+              else resolve(result as UploadApiResponse)
             }
           )
           uploadStream.end(file)
@@ -71,11 +78,12 @@ export const cloudinaryService = {
         height: result.height,
         bytes: result.bytes
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Cloudinary上传错误:', error)
+      const errorMessage = error instanceof Error ? error.message : '上传失败'
       return {
         success: false,
-        error: error.message || '上传失败'
+        error: errorMessage
       }
     }
   },
@@ -85,17 +93,18 @@ export const cloudinaryService = {
     try {
       await cloudinary.uploader.destroy(publicId)
       return { success: true }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Cloudinary删除错误:', error)
+      const errorMessage = error instanceof Error ? error.message : '删除失败'
       return {
         success: false,
-        error: error.message || '删除失败'
+        error: errorMessage
       }
     }
   },
 
   // 获取图片信息
-  async getImageInfo(publicId: string) {
+  async getImageInfo(publicId: string): Promise<UploadResult & { created_at?: string }> {
     try {
       const result = await cloudinary.api.resource(publicId)
       return {
@@ -109,11 +118,12 @@ export const cloudinaryService = {
         bytes: result.bytes,
         created_at: result.created_at
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('获取图片信息错误:', error)
+      const errorMessage = error instanceof Error ? error.message : '获取信息失败'
       return {
         success: false,
-        error: error.message || '获取信息失败'
+        error: errorMessage
       }
     }
   },
