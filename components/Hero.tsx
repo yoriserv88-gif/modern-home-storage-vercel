@@ -5,33 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react'
 import { siteConfig } from '@/data/content'
-
-const banners = [
-  {
-    id: 1,
-    title: "Modern Kitchen Organization",
-    subtitle: "Premium Metal & Wood Storage Solutions for Your Home",
-    cta: "Shop Now",
-    image: "/images/banners/home-banner-1.jpg",
-    bgColor: "bg-gray-900"
-  },
-  {
-    id: 2,
-    title: "Custom OEM/ODM Services",
-    subtitle: "Tailored Storage Solutions for Your Brand",
-    cta: "Get Quote",
-    image: "/images/banners/home-banner-2.jpg",
-    bgColor: "bg-gray-800"
-  },
-  {
-    id: 3,
-    title: "10+ Years Manufacturing Experience",
-    subtitle: "Professional Home Storage Products Manufacturer",
-    cta: "Learn More",
-    image: "/images/banners/home-banner-3.jpg",
-    bgColor: "bg-gray-900"
-  }
-]
+import { banners } from '@/data/banners'
 
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0)

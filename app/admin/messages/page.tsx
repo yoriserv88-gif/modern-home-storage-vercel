@@ -24,15 +24,28 @@ export default function MessagesPage() {
   const fetchMessages = async () => {
     try {
       setLoading(true)
+      setError('')
+      
       const response = await fetch('/api/contact')
       if (response.ok) {
         const data = await response.json()
         setMessages(data.messages || [])
       } else {
-        setError('Failed to load messages')
+        setError('Failed to load messages from API')
+        // 如果API失败，尝试从本地JSON文件读取
+        try {
+          const jsonResponse = await fetch('/data/contact-messages.json')
+          if (jsonResponse.ok) {
+            const localData = await jsonResponse.json()
+            setMessages(localData || [])
+          }
+        } catch (jsonError) {
+          console.log('Local JSON also failed')
+        }
       }
     } catch (error) {
-      setError('Network error')
+      console.error('Error loading messages:', error)
+      setError('Network error - failed to load messages')
     } finally {
       setLoading(false)
     }
@@ -50,9 +63,26 @@ export default function MessagesPage() {
   // 删除消息
   const deleteMessage = async (id: string) => {
     if (confirm('Are you sure you want to delete this message?')) {
-      // 这里可以添加API调用来删除
-      // 目前只在前端删除
-      setMessages(messages.filter(msg => msg.id !== id))
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id }),
+        })
+        
+        if (response.ok) {
+          // 删除成功后重新获取消息列表
+          fetchMessages()
+        } else {
+          const errorData = await response.json()
+          alert(`Failed to delete message: ${errorData.error || 'Unknown error'}`)
+        }
+      } catch (error) {
+        console.error('Error deleting message:', error)
+        alert('Network error - failed to delete message')
+      }
     }
   }
 

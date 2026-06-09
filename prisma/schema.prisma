@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("admin") // admin, editor, viewer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  images    Image[]
+  sessions  Session[]
+}
+
+// 用户会话
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 图片表
+model Image {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  publicId    String?  // Cloudinary public ID
+  module      String   // hero, products, factory, partners, other
+  altText     String?
+  description String?
+  size        Int      // 文件大小（字节）
+  width       Int?
+  height      Int?
+  format      String   // jpg, png, webp, etc.
+  uploadedBy  String
+  uploadedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean  @default(true)
+  
+  user        User     @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+}
+
+// 网站模块配置
+model Module {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  maxImages   Int      @default(10)
+  allowedFormats String @default("jpg,png,webp")
+  maxSize     Int      @default(5242880) // 5MB in bytes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  images      Image[]
+}
+
+// 联系消息
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 网站设置
+model SiteSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?
+}

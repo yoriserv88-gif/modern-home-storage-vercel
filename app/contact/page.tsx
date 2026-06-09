@@ -19,29 +19,39 @@ export default function ContactPage() {
     e.preventDefault()
     
     try {
-      // 在Netlify上，API可能无法正常工作，所以显示成功消息
-      alert('Thank you for your inquiry! We will contact you soon.')
-      
-      // 重置表单
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        subject: '',
-        message: ''
+      // 发送到API
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       })
       
-      // 可选：使用mailto链接作为备选方案
+      const result = await response.json()
+      
+      if (response.ok) {
+        alert('Thank you for your inquiry! We will contact you soon.')
+        
+        // 重置表单
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          company: '',
+          subject: '',
+          message: ''
+        })
+      } else {
+        alert(`Error: ${result.error || 'Failed to submit form'}`)
+      }
+    } catch (error) {
+      console.error('Form submission error:', error)
+      // 降级方案：使用mailto链接
       const mailtoLink = `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
         `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nCompany: ${formData.company}\n\nMessage:\n${formData.message}`
       )}`
-      
-      // 在后台打开邮件客户端（用户可以选择是否发送）
       window.open(mailtoLink, '_blank')
-      
-    } catch (error) {
-      console.error('Form submission error:', error)
       alert('Error submitting form. Please try again or contact us directly.')
     }
   }

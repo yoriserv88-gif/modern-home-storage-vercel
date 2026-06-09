@@ -8,20 +8,32 @@
 
 ## 部署步骤
 
-### 第1步：创建GitHub仓库
+### 第1步：检查/删除现有仓库
+**如果之前创建过同名仓库，需要先删除：**
+1. 访问 https://github.com/您的用户名?tab=repositories
+2. 找到 `modern-home-storage-vercel` 仓库
+3. 点击进入仓库 → Settings → Danger Zone
+4. 点击"Delete this repository"并确认
+
+**或者使用新名称（二选一）：**
+- `modern-home-storage-deploy`
+- `home-storage-website`
+- `storage-website-vercel`
+
+### 第2步：创建GitHub仓库
 1. 访问 https://github.com/new
-2. 仓库名称: `modern-home-storage-vercel`
+2. 仓库名称: `modern-home-storage-vercel`（或新名称）
 3. **重要**: 不要初始化README、.gitignore或license
 4. 点击"Create repository"
 
-### 第2步：使用GitHub Desktop上传
+### 第3步：使用GitHub Desktop上传
 1. 安装GitHub Desktop（如果未安装）: https://desktop.github.com/
 2. 打开GitHub Desktop
 3. 点击"Add" → "Add Existing Repository"
 4. 选择路径: `e:\kiro-amz\modern-home-storage-vercel`
 5. 点击"Create a Repository"
 6. 设置:
-   - Name: `modern-home-storage-vercel`
+   - Name: `modern-home-storage-vercel`（必须与GitHub仓库名一致）
    - Local Path: `e:\kiro-amz\modern-home-storage-vercel`
    - 取消勾选"Initialize this repository with a README"
 7. 点击"Create Repository"

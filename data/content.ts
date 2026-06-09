@@ -4,7 +4,7 @@ export const siteConfig = {
   description: "Upgrade Your Home with Minimalist & Functional Storage Solutions",
   contact: {
     email: "info@hiskiwuu.com",
-    whatsapp: "+1-555-123-4567",
+    whatsapp: "+86 139 2289 3247",
     address: "123 Factory Street, Industrial Zone, CA 90210, USA"
   }
 };
