@@ -26,7 +26,10 @@ export default function LoginPage() {
       if (!validateEmail(value)) {
         setErrors(prev => ({ ...prev, email: ['Please enter a valid email address'] }))
       } else {
-        setErrors(prev => ({ ...prev, email: undefined }))
+        setErrors(prev => {
+          const { email, ...rest } = prev
+          return rest
+        })
       }
     }
     
@@ -34,7 +37,10 @@ export default function LoginPage() {
       if (value.length < 1) {
         setErrors(prev => ({ ...prev, password: ['Password is required'] }))
       } else {
-        setErrors(prev => ({ ...prev, password: undefined }))
+        setErrors(prev => {
+          const { password, ...rest } = prev
+          return rest
+        })
       }
     }
   }
