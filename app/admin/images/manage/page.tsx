@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Image as ImageIcon, 
@@ -27,9 +28,20 @@ interface WebsiteImage {
 }
 
 export default function ImageManagePage() {
+  const searchParams = useSearchParams()
   const [search, setSearch] = useState('')
   const [filterModule, setFilterModule] = useState('all')
   const [selectedImages, setSelectedImages] = useState<string[]>([])
+
+  // 从URL参数中读取模块过滤
+  useEffect(() => {
+    const moduleParam = searchParams.get('module')
+    if (moduleParam && modules.includes(moduleParam)) {
+      setFilterModule(moduleParam)
+    }
+  }, [searchParams])
+
+  const modules = ['all', 'Hero Banner', 'Products', 'Factory', 'Partners', 'Other']
 
   // 模拟数据
   const images: WebsiteImage[] = [
@@ -94,8 +106,6 @@ export default function ImageManagePage() {
       alt: 'Living room storage'
     },
   ]
-
-  const modules = ['all', 'Hero Banner', 'Products', 'Factory', 'Partners', 'Other']
 
   const filteredImages = images.filter(image => {
     const matchesSearch = image.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -170,9 +180,13 @@ export default function ImageManagePage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Images</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Manage Images {filterModule !== 'all' && `- ${filterModule}`}
+          </h1>
           <p className="text-gray-600">
-            View, edit, and delete images across your website. Total: {images.length} images
+            {filterModule === 'all' 
+              ? `View, edit, and delete images across your website. Total: ${images.length} images`
+              : `Managing ${filterModule} images. ${filteredImages.length} images found.`}
           </p>
         </div>
 
@@ -193,8 +207,8 @@ export default function ImageManagePage() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                <Filter size={18} className="text-gray-400 mr-2" />
+              <div className="flex items-center space-x-2">
+                <Filter size={18} className="text-gray-400" />
                 <select
                   value={filterModule}
                   onChange={(e) => setFilterModule(e.target.value)}
@@ -206,6 +220,14 @@ export default function ImageManagePage() {
                     </option>
                   ))}
                 </select>
+                {filterModule !== 'all' && (
+                  <Link
+                    href="/admin/images/manage"
+                    className="text-sm text-gray-600 hover:text-black ml-2"
+                  >
+                    Clear filter
+                  </Link>
+                )}
               </div>
 
               {selectedImages.length > 0 && (

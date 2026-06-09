@@ -57,10 +57,10 @@ export default function DashboardPage() {
   ]
 
   const websiteModules = [
-    { name: 'Hero Banner', path: '/admin/images/hero', imageCount: 3, lastUpdated: '2024-01-15' },
-    { name: 'Products Gallery', path: '/admin/images/products', imageCount: 12, lastUpdated: '2024-01-14' },
-    { name: 'Factory Images', path: '/admin/images/factory', imageCount: 5, lastUpdated: '2024-01-10' },
-    { name: 'Partner Logos', path: '/admin/images/partners', imageCount: 4, lastUpdated: '2024-01-08' },
+    { name: 'Hero Banner', path: '/admin/images/manage?module=Hero Banner', imageCount: 3, lastUpdated: '2024-01-15' },
+    { name: 'Products Gallery', path: '/admin/images/manage?module=Products', imageCount: 12, lastUpdated: '2024-01-14' },
+    { name: 'Factory Images', path: '/admin/images/manage?module=Factory', imageCount: 5, lastUpdated: '2024-01-10' },
+    { name: 'Partner Logos', path: '/admin/images/manage?module=Partners', imageCount: 4, lastUpdated: '2024-01-08' },
   ]
 
   return (
