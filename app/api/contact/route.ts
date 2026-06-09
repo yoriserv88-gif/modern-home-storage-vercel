@@ -19,7 +19,7 @@ export async function DELETE(request: NextRequest) {
     const { id } = await request.json()
     
     // 读取现有消息
-    let messages = []
+    let messages: Array<{ id: string }> = []
     try {
       const fileContent = await fs.readFile(messagesFilePath, 'utf-8')
       messages = JSON.parse(fileContent)
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
   try {
     // 读取JSON文件
     const fileContent = await fs.readFile(messagesFilePath, 'utf-8')
-    const messages = JSON.parse(fileContent)
+    const messages: Array<{ id: string }> = JSON.parse(fileContent)
     
     return NextResponse.json({ 
       success: true, 
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     }
     
     // 读取现有消息
-    let messages = []
+    let messages: Array<{ id: string }> = []
     try {
       const fileContent = await fs.readFile(messagesFilePath, 'utf-8')
       messages = JSON.parse(fileContent)
