@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -27,11 +27,14 @@ interface WebsiteImage {
   alt: string
 }
 
-export default function ImageManagePage() {
+// 使用 useSearchParams 的组件，需要 Suspense
+function ImageManageContent() {
   const searchParams = useSearchParams()
   const [search, setSearch] = useState('')
   const [filterModule, setFilterModule] = useState('all')
   const [selectedImages, setSelectedImages] = useState<string[]>([])
+
+  const modules = ['all', 'Hero Banner', 'Products', 'Factory', 'Partners', 'Other']
 
   // 从URL参数中读取模块过滤
   useEffect(() => {
@@ -40,8 +43,6 @@ export default function ImageManagePage() {
       setFilterModule(moduleParam)
     }
   }, [searchParams])
-
-  const modules = ['all', 'Hero Banner', 'Products', 'Factory', 'Partners', 'Other']
 
   // 模拟数据
   const images: WebsiteImage[] = [
@@ -436,5 +437,21 @@ export default function ImageManagePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// 主导出组件，使用Suspense包装
+export default function ImageManagePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading image manager...</p>
+        </div>
+      </div>
+    }>
+      <ImageManageContent />
+    </Suspense>
   )
 }
